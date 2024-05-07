@@ -17,14 +17,14 @@ describe("solana-errors", () => {
     await airdrop(anchor.getProvider().connection, user.publicKey)
   })
 
-  it("Cannot initialized with incorrect data account!", async () => {
+  it("Cannot initialize with incorrect data account!", async () => {
 
     const bad_data = Keypair.generate();
 
     try {
       await program.methods
         .initialize(10)
-        .accounts({
+        .accountsStrict({
           user: user.publicKey,
           data: bad_data.publicKey,
           systemProgram: SystemProgram.programId
@@ -44,7 +44,7 @@ describe("solana-errors", () => {
 
     const tx = await program.methods
       .initialize(10)
-      .accounts({
+      .accountsStrict({
         user: user.publicKey,
         data: data,
         systemProgram: SystemProgram.programId
