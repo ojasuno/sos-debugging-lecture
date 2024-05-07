@@ -16,7 +16,7 @@ describe("solana-errors", () => {
     console.log("user balance = " + await connection.getBalance(user.publicKey))
     const tx = await program.methods
       .initialize()
-      .accounts({
+      .accountsStrict({
         user: user.publicKey,
         data: data.publicKey,
         systemProgram: SystemProgram.programId
