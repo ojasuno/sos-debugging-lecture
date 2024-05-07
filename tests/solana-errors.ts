@@ -20,7 +20,7 @@ describe("solana-errors", () => {
 
     const tx = await program.methods
       .initialize(11)
-      .accounts({
+      .accountsStrict({
         user: user.publicKey,
         data: data,
         systemProgram: SystemProgram.programId
