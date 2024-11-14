@@ -13,7 +13,7 @@ pub mod solana_errors {
         data.authority = ctx.accounts.user.key();
         data.counter = 0;
 
-        msg!("data.conter = {}", data.counter);
+        msg!("data.counter = {}", data.counter);
         msg!("data pubkey = {}", data.key().to_string());
         msg!("user pubkey = {}", data.authority.key().to_string());
 
