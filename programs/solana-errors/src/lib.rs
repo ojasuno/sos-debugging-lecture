@@ -7,13 +7,15 @@ declare_id!("Gp3jcr7dqCcgp3QbQdcwjS5p5n5usRLoxesQuNaHm4GD");
 pub mod solana_errors {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+    pub fn initialize(ctx: Context<Initialize>, count: u8) -> Result<()> {
         let data = &mut ctx.accounts.data;
 
-        data.authority = ctx.accounts.user.key();
-        data.counter = 0;
+        require!(count <= 10, MyError::InvalidCountValue);
 
-        msg!("data.conter = {}", data.counter);
+        data.authority = ctx.accounts.user.key();
+        data.counter = math_sub(count).unwrap();
+
+        msg!("data.counter = {}", data.counter);
         msg!("data pubkey = {}", data.key().to_string());
         msg!("user pubkey = {}", data.authority.key().to_string());
 
@@ -27,8 +29,10 @@ pub struct Initialize<'info> {
     user: Signer<'info>,
 
     #[account(init,
-        space = 32 + 1,
+        space = 8 + 32 + 1,
         payer = user,
+        seeds = [b"ackee"],
+        bump
     )]
     data: Account<'info, MyData>,
 
@@ -39,4 +43,25 @@ pub struct Initialize<'info> {
 pub struct MyData {
     authority: Pubkey,
     counter: u8,
+}
+
+#[error_code]
+pub enum MyError {
+    #[msg("Invalid Count Value")]
+    InvalidCountValue,
+}
+
+fn math_sub(count: u8) -> Option<u8> {
+    10u8.checked_sub(count)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_math_sub() {
+        assert_eq!(math_sub(2), Some(8));
+        assert_eq!(math_sub(11), None);
+    }
 }
